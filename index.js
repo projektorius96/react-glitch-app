@@ -4,7 +4,7 @@
 require('dotenv').config(); // otherwise : $ node -r dotenv/config your_main_process_fileName.js
 
 // Node.js built-ins
-/* const path = require('path'); */
+const path = require('path');
 
 // Express.js
 const express = require('express');
@@ -26,7 +26,7 @@ const main = async () => {
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    /* app.use(express.static(path.join(__dirname, './public') )); */
+    app.use(express.static(path.join(__dirname, 'build')));
 
     // CREATE
     app.post('/post-item', async (req, res)=>{
@@ -40,9 +40,14 @@ const main = async () => {
     // READ
     app.get('/view-items', async (req, res)=>{
         
-        /* console.log(process.env.DB_USER, process.env.DB_PASS) */
-        let feedback = await db.collection(_collection_).find({}).toArray();
-        res.status(200).json(feedback);
+        try{
+            /* console.log(process.env.DB_USER, process.env.DB_PASS) */
+            let feedback = await db.collection(_collection_).find({}).toArray();
+            res.status(200).json(feedback);
+        }
+        catch(e){
+            res.send(`<h1>404</h1>`); // sendFile(path.join(__dirname, 'build', 'index.html')
+        }
 
     })
 
